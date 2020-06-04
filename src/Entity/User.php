@@ -2,14 +2,22 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ApiResource(
+ *     normalizationContext={
+            "groups"={"read"}
+ *     }
+ * )
  */
 class User implements UserInterface
 {
@@ -17,16 +25,21 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"read"})
+     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"read"})
      */
     private $roles = [];
 
@@ -38,8 +51,20 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="author")
+     * @Groups({"read"})
      */
     private $posts;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $username;
+
+
+    public function __toString()
+    {
+        return $this->email;
+    }
 
     public function __construct()
     {
@@ -151,6 +176,13 @@ class User implements UserInterface
                 $post->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
 
         return $this;
     }

@@ -7,10 +7,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     normalizationContext={
+            "groups"={"read"}
+ *     }
+ * )
  */
 class Post
 {
@@ -18,31 +23,37 @@ class Post
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read"})
      */
     private $body;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read"})
      */
     private $createdAt;
 
     /**
      * @ORM\OneToMany(targetEntity=Comments::class, mappedBy="post")
+     * @Groups({"read"})
      */
     private $comments;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
+     * @Groups({"read"})
      */
     private $author;
 
@@ -135,6 +146,11 @@ class Post
         $this->author = $author;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->title;
     }
 
 
