@@ -13,11 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ApiResource(
- *     normalizationContext={
-            "groups"={"read"}
- *     }
- * )
+ * @ApiResource(normalizationContext={"groups"={"read"}},
+ *     denormalizationContext={"groups"={"write"}})
  */
 class User implements UserInterface
 {
@@ -25,13 +22,13 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"read"})
+     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"read"})
+     * @Groups({"read", "write"})
      * @Assert\NotBlank()
      * @Assert\Email()
      */
@@ -39,24 +36,25 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="json")
-     * @Groups({"read"})
+     * @Groups({"read", "write"})
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Groups({"read", "write"})
      */
     private $password;
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="author")
-     * @Groups({"read"})
      */
     private $posts;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read", "write"})
      */
     private $username;
 
