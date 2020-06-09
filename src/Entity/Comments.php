@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CommentsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CommentsRepository::class)
@@ -26,6 +27,7 @@ class Comments
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Type("\DateTimeInterface")
      */
     private $createdAt;
 

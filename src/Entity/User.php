@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ApiResource(normalizationContext={"groups"={"read"}},
+ * @ApiResource(
+ *     itemOperations={
+ *           "get"={
+ *                  "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *     }
+ *     },
+ *     normalizationContext={"groups"={"read"}},
  *     denormalizationContext={"groups"={"write"}})
  */
 class User implements UserInterface

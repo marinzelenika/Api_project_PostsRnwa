@@ -8,10 +8,17 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
  * @ApiResource(
+ *     collectionOperations={
+            "get",
+ *          "post"={
+ *              "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *     }
+ *     },
  *     normalizationContext={
             "groups"={"read"}
  *     }
@@ -42,6 +49,7 @@ class Post
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"read"})
+     * @Assert\Type("\DateTimeInterface")
      */
     private $createdAt;
 
